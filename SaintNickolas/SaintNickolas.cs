@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SaintNickolas
 {
-    class Children
+    public class Children
     {
         private string surname;
         private string name;
@@ -147,11 +147,95 @@ namespace SaintNickolas
             return new Twigs();
         }
     }
-    class SaintNickolas
+
+    public abstract class Aggregate
+    {
+        public abstract Iterator createIterator();
+    }
+
+    public class ConcreteAggregate : Aggregate
+    {
+        List<Children> childrens = new();
+
+        public override Iterator createIterator()
+        {
+            return new ConcreteIterator(this);
+        }
+
+        public int count
+        {
+            get { return childrens.Count; }
+        }
+
+        public Children this[int index]
+        {
+            get { return childrens[index]; }
+            set { childrens.Insert(index, value); }
+        }
+    }
+
+    public abstract class Iterator
+    {
+        public abstract object First();
+        public abstract object Next();
+        public abstract bool IsDone();
+        public abstract object CurrentItem();
+    }
+
+    public class ConcreteIterator : Iterator
+    {
+        ConcreteAggregate aggregate;
+        int current = 0;
+
+        public ConcreteIterator(ConcreteAggregate aggregate)
+        {
+            this.aggregate = aggregate;
+        }
+
+        public override object CurrentItem()
+        {
+            return aggregate[current];
+        }
+
+        public override object First()
+        {
+            return aggregate[0];
+        }
+
+        public override bool IsDone()
+        {
+            return current >= aggregate.count;
+        }
+
+        public override object Next()
+        {
+            object ret = null;
+            if (current < aggregate.count - 1)
+            {
+                ret = aggregate[++current];
+            }
+
+            return ret;
+        }
+    }
+
+
+    sealed class SaintNickolas
     {
         private List<Children> childrenLetters = new();
-        public SaintNickolas()
+        private SaintNickolas()
         {
+        }
+
+        private static SaintNickolas _instance;
+
+        public static SaintNickolas GetInstance()
+        {
+            if(_instance == null)
+            {
+                _instance = new SaintNickolas();
+            }
+            return _instance;
         }
 
         static SaintNickolas()
@@ -208,6 +292,23 @@ namespace SaintNickolas
             /*saintNickolas.getOrder(12, 4);
             saintNickolas.getOrder(4, 14);
             saintNickolas.getOrder(12, 12);*/
+
+            ConcreteAggregate a = new ConcreteAggregate();
+            a[0] = children1;
+            a[1] = children2;
+
+            Iterator i = a.createIterator();
+
+            Console.WriteLine("Iterating over collection:");
+
+            object item = i.First();
+
+            while(item != null)
+            {
+                Console.WriteLine(item);
+                item = i.Next();
+            }
+
         }
     }
 }
