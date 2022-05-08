@@ -260,7 +260,7 @@ namespace SaintNickolas
 
         public static SaintNickolas GetInstance()
         {
-            if(_instance == null)
+            if (_instance == null)
             {
                 _instance = new SaintNickolas();
             }
@@ -272,27 +272,32 @@ namespace SaintNickolas
             Console.OutputEncoding = Console.InputEncoding = Encoding.Unicode;
         }
 
-        public void getOrder(Children children)
+        public void getLetter(Children children)
         {
 
             GiftFactory goodFactory = new GoodGiftsFactory();
             GiftFactory badFactory = new BadGiftsFactory();
 
-            if (children.getQuantityOfGoodDeeds() >= children.getQuantityOfBadDeeds())
+            /*if (children.getQuantityOfGoodDeeds() >= children.getQuantityOfBadDeeds())
             {
                 children.setGiftFactory(goodFactory);
             }
             else
             {
                 children.setGiftFactory(badFactory);
-            }
-            
+            }*/
+
+            children.setGiftFactory(
+                children.getQuantityOfGoodDeeds() >= children.getQuantityOfBadDeeds()
+                ? goodFactory
+                : badFactory);
+
             childrenLetters.addItem(children);
 
             Console.WriteLine($"Лист від дитини з ім'ям {children.getFullName()} прийнято. Очікуйте подарунку!");
         }
 
-        private void sendOneGift(int quantityOfGoodDeeds, int quantityOfBadDeeds)
+        /*private void sendOneGift(int quantityOfGoodDeeds, int quantityOfBadDeeds)
         {
             GiftFactory goodFactory = new GoodGiftsFactory();
             GiftFactory badFactory = new BadGiftsFactory();
@@ -311,7 +316,7 @@ namespace SaintNickolas
                 badFactory.createEdibleGift();
                 badFactory.createInedibleGift();
             }
-        }
+        }*/
 
         public void sendGifts()
         {
@@ -321,14 +326,16 @@ namespace SaintNickolas
             }*/
             Iterator i = childrenLetters.createIterator();
 
-            Console.WriteLine("Iterating over collection:");
+            //Console.WriteLine("Iterating over collection:");
 
-            object item = i.First();
+            Children item = (Children)i.First();
 
             while (item != null)
             {
                 Console.WriteLine(item);
-                item = i.Next();
+                item.getGiftFactory().createEdibleGift();
+                item.getGiftFactory().createInedibleGift();
+                item = (Children)i.Next();
             }
         }
         static void Main(string[] args)
@@ -337,10 +344,10 @@ namespace SaintNickolas
             SaintNickolas saintNickolas = new SaintNickolas();
 
             Children children1 = new Children("Васильченко", "Андрій", 15, 2);
-            Children children2 = new Children("Роженко", "Анастасія", 8, 8);
+            Children children2 = new Children("Роженко", "Анастасія", 8,9);
 
-            saintNickolas.getOrder(children1);
-            saintNickolas.getOrder(children2);
+            saintNickolas.getLetter(children1);
+            saintNickolas.getLetter(children2);
 
             saintNickolas.sendGifts();
             /*saintNickolas.getOrder(12, 4);
@@ -355,7 +362,7 @@ namespace SaintNickolas
             a.addItem(children2);
             */
 
-            
+
 
         }
     }
