@@ -49,6 +49,104 @@ namespace SaintNickolas
         }
 
     }
+
+    interface IEdibleGift
+    {
+        public void display();
+    }
+
+    class Sweets : IEdibleGift
+    {
+        public Sweets()
+        {
+            Console.WriteLine("Добрий їстівний подарунок: солодощі.");
+        }
+
+        public void display()
+        {
+            Console.WriteLine("Солодощі.");
+        }
+    }
+
+    class BitterPills : IEdibleGift
+    {
+        public BitterPills()
+        {
+            Console.WriteLine("Поганий їстівний подарунок: гіркі пілюлі.");
+        }
+
+        public void display()
+        {
+            Console.WriteLine("Гіркі пілюлі.");
+        }
+    }
+
+
+
+    interface IInedibleGift
+    {
+        public void display();
+
+    }
+
+    class Toys : IInedibleGift
+    {
+        public Toys()
+        {
+            Console.WriteLine("Добрий неїстівний подарунок: іграшки.");
+        }
+
+        public void display()
+        {
+            Console.WriteLine("Іграшки.");
+        }
+    }
+
+    class Twigs : IInedibleGift
+    {
+        public Twigs()
+        {
+            Console.WriteLine("Поганий неїстівний подарунок: різки.");
+        }
+
+        public void display()
+        {
+            Console.WriteLine("Різки.");
+        }
+    }
+
+    interface GiftFactory
+    {
+        public IEdibleGift createEdibleGift();
+
+        public IInedibleGift createInedibleGift();
+    }
+
+    class GoodGiftsFactory : GiftFactory
+    {
+        public IEdibleGift createEdibleGift()
+        {
+            return new Sweets();
+        }
+
+        public IInedibleGift createInedibleGift()
+        {
+            return new Toys();
+        }
+    }
+
+    class BadGiftsFactory : GiftFactory
+    {
+        public IEdibleGift createEdibleGift()
+        {
+            return new BitterPills();
+        }
+
+        public IInedibleGift createInedibleGift()
+        {
+            return new Twigs();
+        }
+    }
     class SaintNickolas
     {
         private List<Children> childrenLetters = new();
@@ -69,21 +167,28 @@ namespace SaintNickolas
 
         private void sendOneGift(int quantityOfGoodDeeds, int quantityOfBadDeeds)
         {
+            GiftFactory goodFactory = new GoodGiftsFactory();
+            GiftFactory badFactory = new BadGiftsFactory();
+
             if (quantityOfGoodDeeds >= quantityOfBadDeeds)
             {
                 // Фабрика добрих подарунків
                 Console.WriteLine("Good");
+                goodFactory.createEdibleGift();
+                goodFactory.createInedibleGift();
             }
             else
             {
                 // Фабрика поганих подарунків
                 Console.WriteLine("Not good");
+                badFactory.createEdibleGift();
+                badFactory.createInedibleGift();
             }
         }
 
         public void sendGifts()
         {
-            foreach(Children c in childrenLetters)
+            foreach (Children c in childrenLetters)
             {
                 sendOneGift(c.getQuantityOfGoodDeeds(), c.getQuantityOfBadDeeds());
             }
