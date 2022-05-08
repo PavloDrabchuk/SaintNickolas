@@ -11,6 +11,8 @@ namespace SaintNickolas
         private int quantityOfGoodDeeds;
         private int quantityOfBadDeeds;
 
+        GiftFactory giftFactory;
+
         public Children()
         {
         }
@@ -43,14 +45,28 @@ namespace SaintNickolas
             this.quantityOfBadDeeds = q;
         }
 
+        public GiftFactory getGiftFactory()
+        {
+            return giftFactory;
+        }
+
+        public void setGiftFactory(GiftFactory giftFactory)
+        {
+            this.giftFactory = giftFactory;
+        }
+
         public string getFullName()
         {
             return surname + " " + name;
         }
 
+        public override string ToString()
+        {
+            return $"Прізвище та ім'я: {getFullName()}. Кількість добрих справ: {quantityOfGoodDeeds}, кількість поганих справ: {quantityOfBadDeeds}.";
+        }
     }
 
-    interface IEdibleGift
+    public interface IEdibleGift
     {
         public void display();
     }
@@ -83,7 +99,7 @@ namespace SaintNickolas
 
 
 
-    interface IInedibleGift
+    public interface IInedibleGift
     {
         public void display();
 
@@ -115,7 +131,7 @@ namespace SaintNickolas
         }
     }
 
-    interface GiftFactory
+    public interface GiftFactory
     {
         public IEdibleGift createEdibleGift();
 
@@ -156,6 +172,7 @@ namespace SaintNickolas
     public class ConcreteAggregate : Aggregate
     {
         List<Children> childrens = new();
+        //List<GiftFactory> giftFactories = new();
 
         public override Iterator createIterator()
         {
@@ -171,6 +188,16 @@ namespace SaintNickolas
         {
             get { return childrens[index]; }
             set { childrens.Insert(index, value); }
+        }
+
+        public void addItem(Children children)
+        {
+            this.childrens.Add(children);
+        }
+
+        public List<Children> getItems()
+        {
+            return childrens;
         }
     }
 
@@ -222,7 +249,9 @@ namespace SaintNickolas
 
     sealed class SaintNickolas
     {
-        private List<Children> childrenLetters = new();
+        //private List<Children> childrenLetters = new();
+        ConcreteAggregate childrenLetters = new ConcreteAggregate();
+
         private SaintNickolas()
         {
         }
@@ -245,7 +274,21 @@ namespace SaintNickolas
 
         public void getOrder(Children children)
         {
-            childrenLetters.Add(children);
+
+            GiftFactory goodFactory = new GoodGiftsFactory();
+            GiftFactory badFactory = new BadGiftsFactory();
+
+            if (children.getQuantityOfGoodDeeds() >= children.getQuantityOfBadDeeds())
+            {
+                children.setGiftFactory(goodFactory);
+            }
+            else
+            {
+                children.setGiftFactory(badFactory);
+            }
+            
+            childrenLetters.addItem(children);
+
             Console.WriteLine($"Лист від дитини з ім'ям {children.getFullName()} прийнято. Очікуйте подарунку!");
         }
 
@@ -272,9 +315,20 @@ namespace SaintNickolas
 
         public void sendGifts()
         {
-            foreach (Children c in childrenLetters)
+            /*foreach (Children c in childrenLetters)
             {
                 sendOneGift(c.getQuantityOfGoodDeeds(), c.getQuantityOfBadDeeds());
+            }*/
+            Iterator i = childrenLetters.createIterator();
+
+            Console.WriteLine("Iterating over collection:");
+
+            object item = i.First();
+
+            while (item != null)
+            {
+                Console.WriteLine(item);
+                item = i.Next();
             }
         }
         static void Main(string[] args)
@@ -293,21 +347,15 @@ namespace SaintNickolas
             saintNickolas.getOrder(4, 14);
             saintNickolas.getOrder(12, 12);*/
 
-            ConcreteAggregate a = new ConcreteAggregate();
-            a[0] = children1;
-            a[1] = children2;
+            ///ConcreteAggregate a = new ConcreteAggregate();
+            /*a[0] = children1;
+            a[1] = children2;*/
 
-            Iterator i = a.createIterator();
+            /*a.addItem(children1);
+            a.addItem(children2);
+            */
 
-            Console.WriteLine("Iterating over collection:");
-
-            object item = i.First();
-
-            while(item != null)
-            {
-                Console.WriteLine(item);
-                item = i.Next();
-            }
+            
 
         }
     }
