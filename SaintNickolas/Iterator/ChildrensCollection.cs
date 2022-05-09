@@ -4,7 +4,7 @@ namespace SaintNickolas.Iterator
 {
     public class ChildrensCollection : IterableCollection
     {
-        List<Children> childrens = new();
+        private List<Children> childrens = new();
 
         public override Iterator createIterator()
         {

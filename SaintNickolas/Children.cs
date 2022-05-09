@@ -9,7 +9,7 @@ namespace SaintNickolas
         private int quantityOfGoodDeeds;
         private int quantityOfBadDeeds;
 
-        IGiftFactory giftFactory;
+        private IGiftFactory giftFactory;
 
         public Children()
         {

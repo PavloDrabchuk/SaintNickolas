@@ -9,11 +9,11 @@ namespace SaintNickolas
     {
         ChildrensCollection childrenLetters = new ChildrensCollection();
 
+        private static SaintNickolas _instance;
+
         private SaintNickolas()
         {
         }
-
-        private static SaintNickolas _instance;
 
         public static SaintNickolas GetInstance()
         {
@@ -60,6 +60,7 @@ namespace SaintNickolas
                 item = (Children)i.Next();
             }
         }
+
         static void Main(string[] args)
         {
             Random random = new();
