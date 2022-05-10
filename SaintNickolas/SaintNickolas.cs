@@ -7,7 +7,7 @@ namespace SaintNickolas
 {
     sealed class SaintNickolas
     {
-        ChildrensCollection childrenLetters = new ChildrensCollection();
+        private ChildrensCollection childrenLetters = new ChildrensCollection();
 
         private static SaintNickolas _instance;
 
